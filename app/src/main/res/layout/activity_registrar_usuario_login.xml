@@ -48,4 +48,10 @@
         android:layout_height="wrap_content"
         android:text="Registrarse" />
 
+    <Button
+        android:id="@+id/idVolverLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver al login"/>
+
 </LinearLayout>

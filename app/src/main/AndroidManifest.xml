@@ -13,6 +13,18 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".Item_list"
+            android:exported="false" />
+        <activity
+            android:name=".VistaUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarCategoria"
+            android:exported="false" />
+        <activity
             android:name=".RegistrarProducto"
             android:exported="false" />
         <activity
