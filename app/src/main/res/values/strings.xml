@@ -1,3 +1,30 @@
 <resources>
+    <!--activity_main-->
     <string name="app_name">My Application</string>
+    <string name="estadoActual">Estado actual</string>
+    <string name="modo">Modo</string>
+    <string name="lectura">Lectura</string>
+    <string name="exterior">Exterior</string>
+    <string name="iniciarDeteccion">Iniciar deteccion</string>
+    <string name="verHistorial">Ver historial</string>
+
+    <!--activity_settings-->
+    <string name="ajustesSensibilidad">Ajustes de sensibilidad</string>
+    <string name="umbralMinimoLectura">Umbral mínimo para lectura (lux)</string>
+    <string name="umbralMinimoExterior">Umbral mínimo para exterior (lux)</string>
+    <string name="configuracionAlertas">Configuracion de alertas</string>
+    <string name="alertasPorVibracion">Alertas por vibracion</string>
+    <string name="alertasSonoras">Alertas sonoras</string>
+    <string name="volumenAlerta">Volumen de alerta</string>
+    <string name="preferenciasModo">Preferencias de modo</string>
+    <string name="cambioAutomaticoModo">Cambio automatico de modo</string>
+    <string name="modoPorDefecto">Modo por defecto</string>
+    <string name="restaurarAjuste">Restaurar</string>
+    <string name="guardarAjuste">Guardar</string>
+
+    <!--Historiao-->
+    <string name="historialTitulo">Historial</string>
+    <string name="noHayHistorialDisponible">No hay historial disponible</string>
+
+
 </resources>
