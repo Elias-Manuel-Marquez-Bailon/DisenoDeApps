@@ -40,4 +40,20 @@ class CloudRepository {
             throw Exception ("Error al obtener lecturas: ${e.message}")
         }
     }
+
+    //Necesito los siguientes metodos, si ya cuento con alguno de ellos, no es necesario que
+    //los pongas
+
+    //Metodo para subir una lectura ala base de datos
+    //uploadLightReading(lightReading: LightReading)
+
+    //Metodo para obtener la lista de lecturas almacenadas en firebase
+    //getLightReadings()
+
+    //Metodo para actualizar la configuracion del usuario en la base de datos
+    //updateUserSettings(userSettings: UserSettings)
+
+    //Metodo obtener la configuracion del usuario desde firebase
+    //getUserSettings()
+
 }
