@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "311323662847",
+    "firebase_url": "https://integradoradisenodeapps-default-rtdb.firebaseio.com",
+    "project_id": "integradoradisenodeapps",
+    "storage_bucket": "integradoradisenodeapps.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311323662847:android:e578ba0240191e70516fca",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcorZfyTVaqRyGh0IgulcQTZq0zug5gik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

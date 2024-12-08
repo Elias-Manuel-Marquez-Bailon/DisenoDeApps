@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso para vibración -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Permisos para audio en dispositivos modernos -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,33 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
-        <activity
-            android:name=".Item_list"
-            android:exported="false" />
-        <activity
-            android:name=".VistaUsuario"
-            android:exported="false" />
-        <activity
-            android:name=".RegistrarUsuario"
-            android:exported="false" />
-        <activity
-            android:name=".RegistrarCategoria"
-            android:exported="false" />
-        <activity
-            android:name=".RegistrarProducto"
-            android:exported="false" />
-        <activity
-            android:name=".RegistrarUsuarioLogin"
-            android:exported="false" />
-        <activity
-            android:name=".IniciarSesion_Activity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
