@@ -4,7 +4,6 @@ data class LightReading (
     val timestamp: Long,
     //val lux: Float
     val lightLevel : Float,
-    //Nos falto almacenar modo
     val mode : String
 ) {
     override fun toString(): String {
@@ -12,6 +11,7 @@ data class LightReading (
             java.util.Locale.getDefault()).format(java.util.Date(timestamp))
         return "Lectura de luz: \n"+
                 "Fecha y Hora: $formatearMarca\n" +
-                "Nivel de Luz: $lightLevel lux"
+                "Nivel de Luz: $lightLevel lux"+
+                "Modo:$mode"
     }
 }
