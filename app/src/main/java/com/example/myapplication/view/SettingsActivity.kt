@@ -30,10 +30,8 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
         // 1. Inicialización de los componentes de la interfaz
         initializeUIComponents()
-
         // Obtener las configuraciones de usuario desde Firebase
         cloudRepository = CloudRepository()
         cloudRepository.getUserSettings { userSettings ->
@@ -42,7 +40,6 @@ class SettingsActivity : AppCompatActivity() {
         }
         // 2. Configuración de los listeners
         configureListeners()
-
     }
 
     private fun initializeUIComponents() {
@@ -56,7 +53,6 @@ class SettingsActivity : AppCompatActivity() {
         buttonRestore = findViewById(R.id.idRestaurar)
         buttonSave = findViewById(R.id.idGuardar)
     }
-
     private fun configureListeners(){
         // Configurar listeners para los Sliders
         sliderMinimumReadingMode.addOnChangeListener { _, value, _ ->
@@ -68,7 +64,6 @@ class SettingsActivity : AppCompatActivity() {
         sliderAlertVolume.addOnChangeListener { _, value, _ ->
             // Ajustar el volumen de las alertas
         }
-
         // Configurar listeners para los Switches
         switchVibrationAlert.setOnCheckedChangeListener { _, isChecked ->
             userSettings.alertType = if (isChecked) AlertType.VIBRATION else AlertType.SOUND
@@ -83,7 +78,6 @@ class SettingsActivity : AppCompatActivity() {
         autoCompleteTextViewDefaultMode.setOnItemClickListener { _, _, position, _ ->
             // Establecer el modo predeterminado
         }
-
         // Configurar listeners para los botones
         buttonRestore.setOnClickListener {
             restoreDefaultSettings()
@@ -93,7 +87,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
     }
-
     private fun loadUserSettingsToUI(){
         // 3. Lectura y actualización de los ajustes del usuario
         sliderMinimumReadingMode.value = userSettings.lowLightThreshold
@@ -102,7 +95,6 @@ class SettingsActivity : AppCompatActivity() {
         switchSoundAlert.isChecked = userSettings.alertType == AlertType.SOUND
         // Establecer otros valores en los componentes de la interfaz
     }
-
     private fun saveUserSettings() {
         // 4. Guardado de ajustes
         cloudRepository.uploadLightReading(userSettings.lowLightThreshold,"Lectura") { succes->
@@ -120,7 +112,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun restoreDefaultSettings() {
         // 4. Restauración de ajustes predeterminados
         userSettings = UserSettings(
@@ -131,13 +122,12 @@ class SettingsActivity : AppCompatActivity() {
         loadUserSettingsToUI()
         saveUserSettings()
     }
-
+    //Esta variable se debe tomar a consideracion en el metodo_main
     private fun notifyMainActivityOfSettingsUpdate() {
         // 5. Notificación a otros componentes sobre los cambios
         // Aquí debes implementar la lógica para notificar a MainActivity sobre los cambios en los ajustes
         // Por ejemplo, puedes enviar un evento a través de un EventBus o un LiveData
     }
-
     private fun validateUserSettings(): Boolean {
         // 6. Validación de los ajustes
         return userSettings.lowLightThreshold < userSettings.highLightThreshold

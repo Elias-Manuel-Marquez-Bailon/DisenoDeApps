@@ -30,8 +30,14 @@ class CloudRepository {
                 )
                 // Guardar los datos
                 lightReadingsRef.child(key).setValue(readingData).await()
+                withContext(Dispatchers.Main){
+                    callback (true)
+                }
             } catch (e: Exception){
-                throw Exception ("Error al guardar lectura: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    callback(false)
+                    throw Exception("Error al guardar lectura: ${e.message}")
+                }
             }
         }
     }

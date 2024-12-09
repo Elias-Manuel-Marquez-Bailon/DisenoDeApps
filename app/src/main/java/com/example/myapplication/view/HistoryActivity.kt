@@ -23,7 +23,6 @@ class HistoryActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
-
         // Configurar la barra de herramientas
         configureToolbar()
         // Inicializar el RecyclerView
@@ -31,22 +30,17 @@ class HistoryActivity: AppCompatActivity() {
         // Cargar y mostrar el historial de lecturas
         loadAndDisplayHistory()
     }
-
     private fun configureToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = getString(R.string.historialTitulo)
-
     }
-
     private fun initRecyclerView(){
         recyclerViewHistory = findViewById(R.id.recyclerViewHistory)
         textViewEmpty = findViewById(R.id.textViewEmpty)
-
         adapter = LightReadingAdapter(this,userSettings) { lightReading ->
             // Maneja el clic en un elemento del historial (por ejemplo, navegar a la actividad de detalles)
             navigateToReadingDetails(lightReading)
         }
-
         recyclerViewHistory.adapter = adapter
         recyclerViewHistory.layoutManager = LinearLayoutManager(this)
     }

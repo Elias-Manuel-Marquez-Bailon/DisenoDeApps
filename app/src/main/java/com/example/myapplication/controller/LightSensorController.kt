@@ -15,6 +15,9 @@ class LightSensorController (
     private var sensorEventListener: SensorEventListener? = null
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
+
+    var onLightLevelChanged:((Float) -> Unit)? = null
+
     //Metodo inicia el monitoreo del sensor en la base de datos
     fun startLightSensorMonitoring() {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -22,7 +25,7 @@ class LightSensorController (
         sensorEventListener = object : SensorEventListener {
             override fun onSensorChanged (event: SensorEvent) {
                 val currentLightLevel = event.values[0]
-                onLightLevelChanged(currentLightLevel)
+                onLightLevelChanged?.invoke(currentLightLevel)
             }
             override fun onAccuracyChanged (sensor: Sensor,accuracy: Int) {
                 // Este método se llama cuando cambia la precisión del sensor
