@@ -5,11 +5,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.LightReading
+import com.example.myapplication.model.UserSettings
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class LightReadingViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class LightReadingViewHolder(
+    itemView: View,
+    private val userSettings: UserSettings
+) : RecyclerView.ViewHolder(itemView) {
     private val txtValorLux: TextView = itemView.findViewById(R.id.txtValorLux)
     private val txtModo: TextView = itemView.findViewById(R.id.txtModo)
     private val txtEstadoLuz: TextView = itemView.findViewById(R.id.txtEstadoLuz)
@@ -24,12 +28,12 @@ class LightReadingViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView
         txtEstadoLuz.text = getReadingStatus(lightReading.lightLevel)
     }
 
-    private fun formatTimestamp(timestamp: Long): String{
+    private fun formatTimestamp(timestamp: Long): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return dateFormat.format(Date(timestamp))
     }
 
-    private fun getReadingStatus (lightLevel : Float): String {
+    private fun getReadingStatus(lightLevel: Float): String {
         return when {
             lightLevel < userSettings.lowLightThreshold -> "Luz baja"
             lightLevel > userSettings.highLightThreshold -> "Luz alta"
