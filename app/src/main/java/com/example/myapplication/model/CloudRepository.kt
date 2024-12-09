@@ -7,16 +7,18 @@ import kotlinx.coroutines.tasks.await
 class CloudRepository {
     // Referencia a la base de datos de Firebase
     private val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-
     // Referencia específica para lecturas de luz
     private val lightReadingsRef = database.child("light_readings")
+    // Referencia específica para configuraciones de usuario
+    private val userSettingsRef = database.child("user_settings")
 
-    // Método para guardar lecturas de luz
+    //Metodo para obtener la lista de lecturas almacenadas en firebase
     suspend fun uploadLightReading (lightLevel: Float, mode: String) {
         try {
             // Crear un nuevo nodo con clave única
             val key = lightReadingsRef.push().key ?:return
             // Crear un mapa con los datos a guardar
+            //Toda la linea de codigo de readingData, no la modifique
             val readingData = mapOf(
                 "timestamp" to System.currentTimeMillis(),
                 "lightLevel" to lightLevel,
@@ -28,32 +30,44 @@ class CloudRepository {
             throw Exception ("Error al guardar lectura: ${e.message}")
         }
     }
-
     // Método para obtener lecturas guardadas
-    suspend fun getLightReadings() : List<Map<String,Any>> {
+    suspend fun getLightReadings() : List<LightReading> {
         return try {
             val snapshot = lightReadingsRef.get().await()
-            snapshot.children.map { child ->
-                child.value as Map <String,Any>
+            snapshot.children.mapNotNull {
+                it.getValue(LightReading::class.java)
             }
         } catch (e: Exception) {
             throw Exception ("Error al obtener lecturas: ${e.message}")
         }
     }
-
-    //Necesito los siguientes metodos, si ya cuento con alguno de ellos, no es necesario que
-    //los pongas
-
-    //Metodo para subir una lectura ala base de datos
-    //uploadLightReading(lightReading: LightReading)
-
-    //Metodo para obtener la lista de lecturas almacenadas en firebase
-    //getLightReadings()
-
     //Metodo para actualizar la configuracion del usuario en la base de datos
-    //updateUserSettings(userSettings: UserSettings)
-
+    suspend fun updateUserSettings(userSettings: UserSettings) {
+        try {
+            userSettingsRef.setValue(userSettings).await()
+        } catch (e: Exception) {
+            throw Exception("Error al actualizar configuraciones: ${e.message}")
+        }
+    }
     //Metodo obtener la configuracion del usuario desde firebase
-    //getUserSettings()
+    suspend fun getUserSettings(): UserSettings? {
+        return try {
+            val snapshot = userSettingsRef.get().await()
+            snapshot.getValue(Map::class.java)?.toUserSettings()
+        } catch (e: Exception) {
+            throw Exception("Error al obtener configuraciones: ${e.message}")
+        }
+    }
+    private fun Map<*, *>?.toUserSettings(): UserSettings? {
+        return this?.let {
+            UserSettings(
+                lowLightThreshold = (this["lowLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                highLightThreshold = (this["highLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                alertType = (this["alertType"] as? String)?.let {
+                    AlertType.valueOf(it)
+            } ?:AlertType.BOTH
+            )
+        }
+    }
 
 }

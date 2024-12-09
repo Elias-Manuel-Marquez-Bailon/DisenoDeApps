@@ -56,7 +56,6 @@ class AlertController(private val context: Context) {
     private fun vibrateDevice() {
         // Patrón de vibración: vibra 500ms, pausa 200ms, vibra 500ms
         val vibratePattern = longArrayOf(0, 500, 200, 500)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Para Android 8.0 (Oreo) y superior
             val vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1)
@@ -74,16 +73,13 @@ class AlertController(private val context: Context) {
     fun showLowLightNotification(){
         // Código para mostrar una notificación de nivel de luz bajo
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         val channel = NotificationChannel("low_light_channel","Nivel de Luz Bajo",NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(channel)
-
         val builder = NotificationCompat.Builder(context,"low_light_channel")
             .setSmallIcon(R.drawable.ic_light)
             .setContentTitle("Nivel de Luz Bajo")
             .setContentText("El nivel de luz actual es bajo.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-
         notificationManager.notify(1,builder.build())
     }
 
@@ -92,15 +88,12 @@ class AlertController(private val context: Context) {
     fun showHighLightNotification () {
         // Código para mostrar una notificación de nivel de luz alto
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         val channel = NotificationChannel("high_light_channel","Nivel de Luz Alto",NotificationManager.IMPORTANCE_HIGH)
-
         val builder = NotificationCompat.Builder(context, "high_light_channel")
             .setSmallIcon(R.drawable.ic_light)
             .setContentTitle("Nivel de Luz Alto")
             .setContentText("El nivel de luz actual es alto.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-
         notificationManager.notify(2,builder.build())
     }
 

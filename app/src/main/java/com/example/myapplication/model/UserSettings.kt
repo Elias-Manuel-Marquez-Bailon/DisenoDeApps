@@ -1,8 +1,12 @@
 package com.example.myapplication.model
 
+import com.example.myapplication.utils.Constants
+
 data class UserSettings(
-    var lowLightThreshold: Float, //Umbrale de luz baja
-    var highLightThreshold: Float, //Umbrale de luz alta
+    //Umbrale de luz baja
+    var lowLightThreshold: Float = Constants.DEFAULT_LOW_LIGHT_THRESHOLD,
+    //Umbrale de luz alta
+    var highLightThreshold: Float = Constants.DEFAULT_HIGH_LIGHT_THRESHOLD,
     var alertType: AlertType //Tipo de alerta: sonido, vibracion o ambas
 ) {
     //Devuelve una descripcion del tipo de alerta
@@ -13,7 +17,6 @@ data class UserSettings(
             AlertType.BOTH -> "Alerta sonora y vibración"
         }
     }
-
     override fun toString(): String {
         return "Configuraciones de Usuario:\n" +
                 "Umbral de Luz Baja: $lowLightThreshold lux\n" +

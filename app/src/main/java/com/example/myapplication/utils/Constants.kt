@@ -1,8 +1,7 @@
 package com.example.myapplication.utils
 
-class Constants {
-    //Esta variable aun nose si dejarla
-    val DEFAULT_THRESHOLD = 50.0f
-
+object Constants {
     //Definir constantes de la aplicacion como umbrales de luz, tipos de alerta
+    const val DEFAULT_LOW_LIGHT_THRESHOLD = 50.0f
+    const val DEFAULT_HIGH_LIGHT_THRESHOLD = 500.0f
 }
