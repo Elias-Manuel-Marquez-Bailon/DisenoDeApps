@@ -19,7 +19,6 @@ class HistoryController (private val context: Context) {
             putString("${lightReading.timestamp}_mode",lightReading.mode)
             apply()
         }
-
     }
 
     //Obtener la lista de lecturas de luz almacenadas localmente

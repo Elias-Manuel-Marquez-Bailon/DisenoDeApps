@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity() {
         // Ejemplo de cómo guardar una lectura
         val lightLevel = 500f // Valor del sensor de luz
 
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             try {
                 cloudRepository.uploadLightReading(lightLevel,currentMode)
             } catch (e: Exception) {
                 Toast.makeText(this@MainActivity,"Error al guardar", Toast.LENGTH_SHORT).show()
             }
-        }
+        }*/
     }
 
     private fun displayReadings(readings: List<Map<String,Any>>) {
