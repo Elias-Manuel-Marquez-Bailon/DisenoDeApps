@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
         btnHistorial = findViewById(R.id.btnHistorial)
 
+        // Asegúrate de inicializar userSettings aquí <--------------
+        userSettings = UserSettings()
+
         // Inicializar el LightSensorController y el AlertController
         lightSensorController = LightSensorController(this,userSettings)
         alertController = AlertController(this)
