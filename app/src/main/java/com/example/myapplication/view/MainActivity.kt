@@ -158,5 +158,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    //Aqui abajo iria la logica para agregar el menu (En teoria no deberias de cambiar algo de las funciones del programa)
+    //Seria agregar metodos que te permitieran desplazarte del Main a las otras 2 interfaces
+
 }
 

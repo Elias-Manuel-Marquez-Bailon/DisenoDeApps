@@ -62,4 +62,7 @@ class HistoryActivity: AppCompatActivity() {
         // Implementa la lógica para navegar a la actividad de detalles de la lectura
         // y pasar los datos relevantes
     }
+
+    //Aqui agregar metodos para el menu
+
 }

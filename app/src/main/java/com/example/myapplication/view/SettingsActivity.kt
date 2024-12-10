@@ -133,4 +133,6 @@ class SettingsActivity : AppCompatActivity() {
         return userSettings.lowLightThreshold < userSettings.highLightThreshold
     }
 
+    //Aqui agregar metodos para el menu
+
 }
