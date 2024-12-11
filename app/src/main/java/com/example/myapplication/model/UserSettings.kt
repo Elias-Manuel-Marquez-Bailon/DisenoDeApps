@@ -8,6 +8,7 @@ data class UserSettings(
     //Umbrale de luz alta
     var highLightThreshold: Float = Constants.DEFAULT_HIGH_LIGHT_THRESHOLD,
     var alertType: AlertType = AlertType.BOTH //Tipo de alerta: sonido, vibracion o ambas
+
 ) {
     //Devuelve una descripcion del tipo de alerta
     fun getAlertTypeDescription(): String {
