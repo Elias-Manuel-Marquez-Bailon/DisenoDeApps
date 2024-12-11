@@ -5,16 +5,22 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.UserSettings
+import kotlin.math.abs
+import kotlin.math.max
 
 class LightSensorController (
     private val context: Context,
-    private val userSettings: UserSettings
+    private val userSettings: UserSettings,
+    private val cloudRepository: CloudRepository
 ) {
     private val alertController = AlertController(context)
     private var sensorEventListener: SensorEventListener? = null
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
+    //Se agrego esta variable para niveles bruscos
+    private var previousLightLevel : Float = 0F
 
     var onLightLevelChanged:((Float) -> Unit)? = null
 
@@ -48,8 +54,19 @@ class LightSensorController (
     }
     //Metodo para manejar los cambios en el nivel de luz y realizar las acciones correspondientes
     fun onLightLevelChanged(lightLevel: Float) {
-        // Manejar los cambios en el nivel de luz y realizar las acciones correspondientes
+        // Verificar si el nivel de luz actual está fuera del rango adecuado
+        if (isBrightnessDifferenceSignificant(lightLevel)) {
+            cloudRepository.uploadLightReading(lightLevel,"Modo") { succes ->
+                //Manejar el resultado de la operacion de guardado
+            }
+            previousLightLevel = lightLevel
+        }
         checkLightLevels(lightLevel)
+    }
+    private fun isBrightnessDifferenceSignificant (currentLightLevel: Float): Boolean {
+        val brightnessDifference = abs(currentLightLevel - previousLightLevel)
+        return brightnessDifference >= max(userSettings.lowLightThreshold,
+            userSettings.highLightThreshold) * 0.2 //20% De diferencia
     }
     fun checkLightLevels(currentLightLevel: Float) {
         when {
@@ -67,5 +84,4 @@ class LightSensorController (
             }
         }
     }
-
 }
