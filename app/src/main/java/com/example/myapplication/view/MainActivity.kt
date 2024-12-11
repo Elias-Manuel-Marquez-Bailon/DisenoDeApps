@@ -50,8 +50,11 @@ class MainActivity : AppCompatActivity() {
         // Asegúrate de inicializar userSettings aquí <--------------
         userSettings = UserSettings()
 
+        // Cargar las configuraciones de usuario
+        loadUserSettings()
+
         // Inicializar el LightSensorController y el AlertController
-        lightSensorController = LightSensorController(this,userSettings)
+        lightSensorController = LightSensorController(applicationContext,userSettings,cloudRepository)
         alertController = AlertController(this)
 
         // Obtener la configuración del usuario desde Firebase
@@ -100,7 +103,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
 
     }
 
@@ -156,6 +158,25 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToSettingsActivity(){
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun loadUserSettings() {
+        val cloudRepository = CloudRepository()
+        cloudRepository.getUserSettings { userSettings ->
+            userSettings?.let {
+                this.userSettings = it
+                // Aquí puedes actualizar la interfaz de usuario con los valores de configuración
+                updateUIWithUserSettings()
+            } ?: run {
+            // Si no se pudo obtener la configuración del usuario, utilizar valores predeterminados
+        }
+        }
+    }
+
+    private fun updateUIWithUserSettings () {
+        // Aquí puedes actualizar los controles de la interfaz de usuario
+        // con los valores de configuración del usuario
+        // como los umbrales de luz y el tipo de alerta
     }
 
     //Aqui abajo iria la logica para agregar el menu (En teoria no deberias de cambiar algo de las funciones del programa)
