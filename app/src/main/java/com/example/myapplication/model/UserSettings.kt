@@ -7,7 +7,21 @@ data class UserSettings(
     var lowLightThreshold: Float = Constants.DEFAULT_LOW_LIGHT_THRESHOLD,
     //Umbrale de luz alta
     var highLightThreshold: Float = Constants.DEFAULT_HIGH_LIGHT_THRESHOLD,
-    var alertType: AlertType = AlertType.BOTH //Tipo de alerta: sonido, vibracion o ambas
+    var alertType: AlertType = AlertType.BOTH, //Tipo de alerta: sonido, vibracion o ambas
+
+    // Umbrales y alertas para el modo "Lectura"
+    var readingLowLightThreshold: Float = Constants.DEFAULT_READING_LOW_LIGHT_THRESHOLD,
+    var readingHighLightThreshold: Float = Constants.DEFAULT_READING_HIGH_LIGHT_THRESHOLD,
+    var readingAlertType: AlertType = AlertType.BOTH,
+
+    // Umbrales y alertas para el modo "Exterior"
+    var exteriorLowLightThreshold: Float = Constants.DEFAULT_EXTERIOR_LOW_LIGHT_THRESHOLD,
+    var exteriorHighLightThreshold: Float = Constants.DEFAULT_EXTERIOR_HIGH_LIGHT_THRESHOLD,
+    var exteriorAlertType: AlertType = AlertType.BOTH,
+
+    var alertVolume: Int = Constants.DEFAULT_ALERT_VOLUME,
+    var autoModeChangeEnabled : Boolean = true,
+    var defaultMode : String = Constants.DEFAULT_MODE
 
 ) {
     //Devuelve una descripcion del tipo de alerta

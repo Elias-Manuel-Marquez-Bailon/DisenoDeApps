@@ -13,8 +13,8 @@
     <string name="umbralMinimoLectura">Umbral mínimo para lectura (lux)</string>
     <string name="umbralMinimoExterior">Umbral mínimo para exterior (lux)</string>
     <string name="configuracionAlertas">Configuracion de alertas</string>
-    <string name="alertasPorVibracion">Alertas por vibracion</string>
-    <string name="alertasSonoras">Alertas sonoras</string>
+    <string name="alertasPorVibracion">Activar alertas por vibracion</string>
+    <string name="alertasSonoras">Activar alertas sonoras</string>
     <string name="volumenAlerta">Volumen de alerta</string>
     <string name="preferenciasModo">Preferencias de modo</string>
     <string name="cambioAutomaticoModo">Cambio automatico de modo</string>

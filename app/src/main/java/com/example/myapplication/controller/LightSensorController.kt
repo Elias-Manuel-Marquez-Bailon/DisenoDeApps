@@ -53,7 +53,7 @@ class LightSensorController (
         lightSensor = null
     }
     //Metodo para manejar los cambios en el nivel de luz y realizar las acciones correspondientes
-    fun onLightLevelChanged(lightLevel: Float) {
+    fun onLightLevelChanged(lightLevel: Float, mode : String) {
         // Verificar si el nivel de luz actual está fuera del rango adecuado
         if (isBrightnessDifferenceSignificant(lightLevel)) {
             cloudRepository.uploadLightReading(lightLevel,"Modo") { succes ->
@@ -61,27 +61,38 @@ class LightSensorController (
             }
             previousLightLevel = lightLevel
         }
-        checkLightLevels(lightLevel)
+        checkLightLevels(lightLevel,mode)
     }
     private fun isBrightnessDifferenceSignificant (currentLightLevel: Float): Boolean {
         val brightnessDifference = abs(currentLightLevel - previousLightLevel)
         return brightnessDifference >= max(userSettings.lowLightThreshold,
             userSettings.highLightThreshold) * 0.2 //20% De diferencia
     }
-    fun checkLightLevels(currentLightLevel: Float) {
-        when {
-            currentLightLevel < userSettings.lowLightThreshold -> {
-                // Nivel de luz muy bajo
-                alertController.triggerAlert(userSettings.alertType)
+    private fun checkLightLevels(currentLightLevel: Float, mode: String) {
+        when (mode) {
+            "Lectura" -> {
+                if (currentLightLevel < userSettings.lowLightThreshold) {
+                    // Nivel de luz muy bajo
+                    alertController.triggerAlert(userSettings.alertType)
+                } else if (currentLightLevel > userSettings.highLightThreshold) {
+                    // Nivel de luz muy alto
+                    alertController.triggerAlert(userSettings.alertType)
+                } else {
+                    // Nivel de luz normal, detener alertas
+                    alertController.stopAlerts()
+                }
             }
-            currentLightLevel > userSettings.highLightThreshold -> {
-                // Nivel de luz muy alto
-                alertController.triggerAlert(userSettings.alertType)
+            "Exterior" -> {
+                // Verificar niveles de luz para el modo "Exterior"
+                if (currentLightLevel < userSettings.exteriorLowLightThreshold) {
+                    alertController.triggerAlert(userSettings.exteriorAlertType)
+                } else if (currentLightLevel > userSettings.exteriorHighLightThreshold) {
+                    alertController.triggerAlert(userSettings.exteriorAlertType)
+                } else {
+                    alertController.stopAlerts()
+                }
             }
-            else -> {
-                // Nivel de luz normal, detener alertas
-                alertController.stopAlerts()
-            }
+
         }
     }
 }

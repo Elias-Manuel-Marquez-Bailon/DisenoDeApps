@@ -9,12 +9,19 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/action_main"
+        android:icon="@drawable/ic_home"
+        android:title="Main Activity"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_ajustes"
         android:icon="@drawable/ic_settings"
         android:title="Ajustes"
         app:showAsAction="ifRoom"/>
 
-    <item
+    <!--<item
         android:id="@+id/menu_info"
         android:icon="@drawable/ic_information"
         android:title="Información"
@@ -24,13 +31,8 @@
         android:id="@+id/menu_ayuda"
         android:icon="@drawable/ic_help"
         android:title="Ayuda"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 
-    <item
-        android:id="@+id/action_main"
-        android:title="Main Activity"
-        android:orderInCategory="1"
-        app:showAsAction="never" />
     <item
         android:id="@+id/action_history"
         android:title="History Activity"

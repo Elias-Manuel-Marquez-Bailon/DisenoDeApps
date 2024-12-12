@@ -56,8 +56,12 @@ class MainActivity : AppCompatActivity() {
             userSettings = settings ?: UserSettings()
         }
 
-        btnIniciarDeteccion.setOnClickListener { startLightSensorMonitoring() }
-        btnHistorial.setOnClickListener { navigateToHistoryActivity() }
+        btnIniciarDeteccion.setOnClickListener {
+            startLightSensorMonitoring()
+        }
+        btnHistorial.setOnClickListener {
+            navigateToHistoryActivity()
+        }
 
         idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -66,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        lightSensorController.startLightSensorMonitoring()
+        //lightSensorController.startLightSensorMonitoring()
         lightSensorController.onLightLevelChanged = { level ->
             val lightStatus = determineLightStatus(level)
             updateUI(level, lightStatus, currentMode)

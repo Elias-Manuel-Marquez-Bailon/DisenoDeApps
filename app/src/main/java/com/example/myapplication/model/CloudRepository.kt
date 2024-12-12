@@ -1,5 +1,6 @@
 package com.example.myapplication.model
 
+import com.example.myapplication.utils.Constants
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +63,17 @@ class CloudRepository {
     fun updateUserSettings(userSettings: UserSettings, callback: (Boolean) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                val userSettingsMap = mapOf(
+                    "readingLowLightThreshold" to userSettings.readingLowLightThreshold,
+                    "readingHighLightThreshold" to userSettings.readingHighLightThreshold,
+                    "readingAlertType" to userSettings.readingAlertType.name,
+                    "exteriorLowLightThreshold" to userSettings.exteriorLowLightThreshold,
+                    "exteriorHighLightThreshold" to userSettings.exteriorHighLightThreshold,
+                    "exteriorAlertType" to userSettings.exteriorAlertType.name,
+                    "alertVolume" to userSettings.alertVolume,
+                    "autoModeChangeEnabled" to userSettings.autoModeChangeEnabled,
+                    "defaultMode" to userSettings.defaultMode
+                )
                 userSettingsRef.setValue(userSettings).await()
                 withContext(Dispatchers.Main){
                     callback(true)
@@ -80,7 +92,21 @@ class CloudRepository {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val snapshot = userSettingsRef.get().await()
-                val userSettings = snapshot.getValue(Map::class.java)?.toUserSettings()
+                val userSettingsMap = snapshot.getValue(Map::class.java) as? Map<*,*>
+                val userSettings = userSettingsMap?.let {
+                    UserSettings(
+                        readingLowLightThreshold = (it["readingLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        readingHighLightThreshold = (it["readingHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        readingAlertType = (it["readingAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
+                        exteriorLowLightThreshold = (it["exteriorLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        exteriorHighLightThreshold = (it["exteriorHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        exteriorAlertType = (it["exteriorAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
+                        alertVolume = (it["alertVolume"] as? Long)?.toInt() ?: 0,
+                        autoModeChangeEnabled = (it["autoModeChangeEnabled"] as? Boolean) ?: true,
+                        defaultMode = (it["defaultMode"] as? String) ?: Constants.DEFAULT_MODE
+
+                    )
+                }
                 withContext(Dispatchers.Main){
                     callback(userSettings)
                 }
@@ -102,6 +128,34 @@ class CloudRepository {
                     AlertType.valueOf(it)
             } ?:AlertType.BOTH
             )
+        }
+    }
+
+    // Método para guardar las configuraciones de usuario
+    fun saveUserSettings(userSettings: UserSettings, callback: (Boolean) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val userSettingsMap = mapOf(
+                    "readingLowLightThreshold" to userSettings.readingLowLightThreshold,
+                    "readingHighLightThreshold" to userSettings.readingHighLightThreshold,
+                    "readingAlertType" to userSettings.readingAlertType.name,
+                    "exteriorLowLightThreshold" to userSettings.exteriorLowLightThreshold,
+                    "exteriorHighLightThreshold" to userSettings.exteriorHighLightThreshold,
+                    "exteriorAlertType" to userSettings.exteriorAlertType.name,
+                    "alertVolume" to userSettings.alertVolume,
+                    "autoModeChangeEnabled" to userSettings.autoModeChangeEnabled,
+                    "defaultMode" to userSettings.defaultMode
+                )
+                userSettingsRef.setValue(userSettingsMap).await()
+                withContext(Dispatchers.Main) {
+                    callback(true)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    callback(false)
+                    throw Exception("Error al guardar configuraciones de usuario: ${e.message}")
+                }
+            }
         }
     }
 
