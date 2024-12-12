@@ -139,7 +139,7 @@
             android:text="@string/iniciarDeteccion"
             app:cornerRadius="8dp" />
 
-        <com.google.android.material.button.MaterialButton
+       <!-- <com.google.android.material.button.MaterialButton
             android:id="@+id/btnHistorial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -147,7 +147,17 @@
             android:padding="16dp"
             android:text="@string/verHistorial"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="8dp" />-->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDetenerDeteccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="16dp"
+            android:text="@string/detenerDeteccion"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:cornerRadius="8dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

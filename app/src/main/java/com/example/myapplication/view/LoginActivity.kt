@@ -20,10 +20,14 @@ class LoginActivity : AppCompatActivity() {
         val registrar = findViewById<Button>(R.id.btnRegistrar)
         val iniciarSesion = findViewById<Button>(R.id.idIniciarSesion)
 
-        //Variable para registrar y almacenar en la base de datos al usuario
         val auth = FirebaseAuth.getInstance()
 
-        registrar.setOnClickListener{
+        registrar.setOnClickListener {
+            val intent = Intent(this, RegistrarActivity::class.java)
+            startActivity(intent)
+        }
+
+        iniciarSesion.setOnClickListener {
             val correo = correoElectronico.text.toString().trim()
             val contra = contrasena.text.toString().trim()
 
@@ -45,60 +49,23 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(correo,contra)
+            auth.signInWithEmailAndPassword(correo, contra)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(
                             this,
-                            "Error en el registro: ${task.exception?.message}",
+                            "Error al iniciar sesión: ${task.exception?.message}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
-
-            iniciarSesion.setOnClickListener{
-                val correo = correoElectronico.text.toString().trim()
-                val contra = contrasena.text.toString().trim()
-
-                if (correo.isEmpty()) {
-                    correoElectronico.error = "El correo electrónico es obligatorio"
-                    correoElectronico.requestFocus()
-                    return@setOnClickListener
-                }
-
-                if (contra.isEmpty()) {
-                    contrasena.error = "La contraseña es obligatoria"
-                    contrasena.requestFocus()
-                    return@setOnClickListener
-                }
-
-                if (contra.length < 6) {
-                    contrasena.error = "La contraseña debe tener al menos 6 caracteres"
-                    contrasena.requestFocus()
-                    return@setOnClickListener
-                }
-
-                auth.signInWithEmailAndPassword(correo,contra)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this,"Inicio de sesion exitoso",Toast.LENGTH_SHORT).show()
-
-                            val intent= Intent(this,MainActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "Error al iniciar sesion: ${task.exception?.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-            }
-
         }
     }
 }

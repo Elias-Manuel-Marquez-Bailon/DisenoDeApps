@@ -6,6 +6,7 @@
     <string name="lectura">Lectura</string>
     <string name="exterior">Exterior</string>
     <string name="iniciarDeteccion">Iniciar deteccion</string>
+    <string name="detenerDeteccion">Detener deteccion</string>
     <string name="verHistorial">Ver historial</string>
 
     <!--activity_settings-->

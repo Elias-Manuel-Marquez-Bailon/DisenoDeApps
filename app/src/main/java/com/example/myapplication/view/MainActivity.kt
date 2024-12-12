@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var idLectura: RadioButton
     private lateinit var idExterior: RadioButton
     private lateinit var btnIniciarDeteccion: MaterialButton
-    private lateinit var btnHistorial: MaterialButton
+    //private lateinit var btnHistorial: MaterialButton
+    private lateinit var btnDetenerDeteccion : MaterialButton
 
     private lateinit var lightSensorController: LightSensorController
     private lateinit var alertController: AlertController
@@ -46,7 +47,8 @@ class MainActivity : AppCompatActivity() {
         idLectura = findViewById(R.id.idLectura)
         idExterior = findViewById(R.id.idExterior)
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
-        btnHistorial = findViewById(R.id.btnHistorial)
+        //btnHistorial = findViewById(R.id.btnHistorial)
+        //btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 
         userSettings = UserSettings()
         lightSensorController = LightSensorController(this, userSettings, cloudRepository)
@@ -59,9 +61,9 @@ class MainActivity : AppCompatActivity() {
         btnIniciarDeteccion.setOnClickListener {
             startLightSensorMonitoring()
         }
-        btnHistorial.setOnClickListener {
+        /*btnHistorial.setOnClickListener {
             navigateToHistoryActivity()
-        }
+        }*/
 
         idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
