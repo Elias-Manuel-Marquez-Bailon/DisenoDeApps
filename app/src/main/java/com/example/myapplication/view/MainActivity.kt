@@ -26,14 +26,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var idLectura: RadioButton
     private lateinit var idExterior: RadioButton
     private lateinit var btnIniciarDeteccion: MaterialButton
-    //private lateinit var btnHistorial: MaterialButton
-    private lateinit var btnDetenerDeteccion : MaterialButton
+    private lateinit var btnDetenerDeteccion: MaterialButton
 
     private lateinit var lightSensorController: LightSensorController
     private lateinit var alertController: AlertController
     private lateinit var userSettings: UserSettings
     private val cloudRepository = CloudRepository()
     private var currentMode: String = "Lectura"
+    private var isMonitoring = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +47,7 @@ class MainActivity : AppCompatActivity() {
         idLectura = findViewById(R.id.idLectura)
         idExterior = findViewById(R.id.idExterior)
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
-        //btnHistorial = findViewById(R.id.btnHistorial)
-        //btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
+        btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 
         userSettings = UserSettings()
         lightSensorController = LightSensorController(this, userSettings, cloudRepository)
@@ -61,9 +60,10 @@ class MainActivity : AppCompatActivity() {
         btnIniciarDeteccion.setOnClickListener {
             startLightSensorMonitoring()
         }
-        /*btnHistorial.setOnClickListener {
-            navigateToHistoryActivity()
-        }*/
+
+        btnDetenerDeteccion.setOnClickListener {
+            stopLightSensorMonitoring()
+        }
 
         idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //lightSensorController.startLightSensorMonitoring()
         lightSensorController.onLightLevelChanged = { level ->
             val lightStatus = determineLightStatus(level)
             updateUI(level, lightStatus, currentMode)
@@ -90,12 +89,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startLightSensorMonitoring() {
-        lightSensorController.startLightSensorMonitoring()
+        if (!isMonitoring) {
+            lightSensorController.startLightSensorMonitoring()
+            isMonitoring = true
+            btnIniciarDeteccion.text = getString(R.string.detenerDeteccion)
+        }
     }
 
-    private fun navigateToHistoryActivity() {
-        val intent = Intent(this, HistoryActivity::class.java)
-        startActivity(intent)
+    private fun stopLightSensorMonitoring() {
+        if (isMonitoring) {
+            lightSensorController.stopLightSensorMonitoring()
+            isMonitoring = false
+            btnIniciarDeteccion.text = getString(R.string.iniciarDeteccion)
+        }
     }
 
     private fun updateMode(mode: String) {
@@ -142,6 +148,11 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun navigateToHistoryActivity() {
+        val intent = Intent(this, HistoryActivity::class.java)
+        startActivity(intent)
     }
 
     private fun navigateToSettingsActivity() {
