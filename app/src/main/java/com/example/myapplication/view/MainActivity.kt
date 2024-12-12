@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         if (!isMonitoring) {
             lightSensorController.startLightSensorMonitoring()
             isMonitoring = true
-            btnIniciarDeteccion.text = getString(R.string.detenerDeteccion)
+            //btnIniciarDeteccion.text = getString(R.string.detenerDeteccion)
         }
     }
 
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         if (isMonitoring) {
             lightSensorController.stopLightSensorMonitoring()
             isMonitoring = false
-            btnIniciarDeteccion.text = getString(R.string.iniciarDeteccion)
+            //btnIniciarDeteccion.text = getString(R.string.iniciarDeteccion)
         }
     }
 
