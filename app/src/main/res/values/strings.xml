@@ -22,9 +22,16 @@
     <string name="restaurarAjuste">Restaurar</string>
     <string name="guardarAjuste">Guardar</string>
 
-    <!--Historiao-->
+    <!--Historial-->
     <string name="historialTitulo">Historial</string>
     <string name="noHayHistorialDisponible">No hay historial disponible</string>
 
+    <!--Registrar usuario-->
+    <string name="nombreUsu">Nombres</string>
+    <string name="apellidosUsu">Apellidos</string>
+    <string name="correo">Correo Electronico </string>
+    <string name="contrasenaUsu">Contraseña</string>
+    <string name="confirmarContra">Confirmar contraseña</string>
+    <string name="registrar">Registrar datos</string>
 
 </resources>
