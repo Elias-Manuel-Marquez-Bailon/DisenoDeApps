@@ -20,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
         val registrar = findViewById<Button>(R.id.btnRegistrar)
         val iniciarSesion = findViewById<Button>(R.id.idIniciarSesion)
 
+        //Variable para registrar y almacenar en la base de datos al usuario
         val auth = FirebaseAuth.getInstance()
 
         registrar.setOnClickListener{
@@ -84,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             Toast.makeText(this,"Inicio de sesion exitoso",Toast.LENGTH_SHORT).show()
 
-                            val intent= Intent(this,RegistrarActivity::class.java)
+                            val intent= Intent(this,MainActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
                             finish()
