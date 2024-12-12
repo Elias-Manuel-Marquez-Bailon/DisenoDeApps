@@ -58,4 +58,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-database")
 
+    //Dependencia para notificaciones:
+    implementation("androidx.core:core-ktx:2.2.0")
+
 }
