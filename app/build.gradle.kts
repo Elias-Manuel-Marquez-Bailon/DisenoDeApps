@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -66,7 +66,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging:24.1.0")
 
-    //Dependencia para notificaciones:
-    implementation("androidx.core:core-ktx:2.2.0")
+
 
 }
