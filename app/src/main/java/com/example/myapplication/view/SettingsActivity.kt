@@ -102,6 +102,23 @@ class SettingsActivity : AppCompatActivity() {
                 // Manejar el resultado de la operación de guardado
             }
         }
+
+        idRestaurar.setOnClickListener{
+            restoreDefaultSettings()
+        }
+
+        idGuardar.setOnClickListener {
+            updateUserSettingsFromUI()
+            cloudRepository.saveUserSettings(userSettings) { success ->
+                // Manejar el resultado de la operación de guardado
+                if (success) {
+                    Toast.makeText(this, "Configuración guardada", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error al guardar configuración", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -196,5 +213,23 @@ class SettingsActivity : AppCompatActivity() {
         idModoPorDefecto.setText(userSettings.defaultMode)
     }
 
+    private fun restoreDefaultSettings() {
+        userSettings.readingLowLightThreshold = Constants.DEFAULT_READING_LOW_LIGHT_THRESHOLD
+        userSettings.exteriorLowLightThreshold = Constants.DEFAULT_EXTERIOR_LOW_LIGHT_THRESHOLD
+        userSettings.readingAlertType = AlertType.BOTH
+        userSettings.alertVolume = Constants.DEFAULT_ALERT_VOLUME
+        userSettings.autoModeChangeEnabled = true
+        userSettings.defaultMode = Constants.DEFAULT_MODE
+
+        updateUIWithUserSettings()
+        cloudRepository.saveUserSettings(userSettings) { success ->
+            // Manejar el resultado de la operación de guardado
+            if (success) {
+                Toast.makeText(this, "Configuración restaurada", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Error al restaurar configuración", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }
