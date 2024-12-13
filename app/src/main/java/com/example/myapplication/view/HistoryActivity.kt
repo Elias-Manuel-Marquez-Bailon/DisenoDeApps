@@ -53,10 +53,7 @@ class HistoryActivity : AppCompatActivity() {
                 navigateToMainActivity()
                 true
             }
-            R.id.menu_ajustes -> {
-                navigateToSettingsActivity()
-                true
-            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

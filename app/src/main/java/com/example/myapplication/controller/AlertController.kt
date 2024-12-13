@@ -43,8 +43,12 @@ class AlertController(private val context: Context) {
                 playAlertSound()
                 vibrateDevice()
             }
+            else -> {
+                // No hay lógica, pero dejamos esta rama para evitar errores
+            }
         }
     }
+
 
     //Reproducir una alerta
     private fun playAlertSound() {
