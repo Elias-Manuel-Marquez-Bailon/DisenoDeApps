@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.controller.AlertController
 import com.example.myapplication.controller.LightSensorController
+import com.example.myapplication.controller.ProximitySensorController
 import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.UserSettings
 import com.google.android.material.button.MaterialButton
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
     private lateinit var txtEstadoLectura: TextView
     private lateinit var lightSensorController: LightSensorController
 
+    private lateinit var proximitySensorController: ProximitySensorController
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +61,8 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
         idValorLuz = findViewById(R.id.idValorLuz)
         idEstadoLectura = findViewById(R.id.idEstadoLectura)
         idSeleccionar = findViewById(R.id.idSeleccionar)
-        idLectura = findViewById(R.id.idLectura)
-        idExterior = findViewById(R.id.idExterior)
+        //idLectura = findViewById(R.id.idLectura)
+        //idExterior = findViewById(R.id.idExterior)
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
         btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 
@@ -78,6 +81,13 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
             userSettings = settings ?: UserSettings()
         }
 
+        // Crear e iniciar el ProximitySensorController
+        proximitySensorController = ProximitySensorController(
+            context = this,
+            cloudRepository = cloudRepository,
+            userSettings = userSettings
+        )
+
         btnIniciarDeteccion.setOnClickListener {
             startLightSensorMonitoring()
         }
@@ -86,12 +96,12 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
             stopLightSensorMonitoring()
         }
 
-        idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
+        /*idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.idLectura -> updateMode("Lectura")
                 R.id.idExterior -> updateMode("Exterior")
             }
-        }
+        }*/
 
         lightSensorController.onLightLevelChanged = { level ->
             val lightStatus = determineLightStatus(level)
@@ -107,6 +117,9 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
                 cloudRepository.uploadLightReading(level, currentMode) { }
             }
         }
+
+        idLectura.isChecked = true
+        updateMode("Lectura")
     }
     //Solicitar permiso de notificaciones para Android13 +
     private fun requestNotificationPermission(){
@@ -205,6 +218,21 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
         lifecycleScope.launch {
             cloudRepository.uploadLightReading(0f, currentMode) { }
         }
+
+        when (currentMode) {
+            "Lectura" -> {
+                // Configuraciones específicas para el modo lectura
+                // Por ejemplo, ajustar umbrales de luz, iniciar procesos, etc.
+                userSettings.lowLightThreshold = 100f // Umbral para modo lectura
+                userSettings.highLightThreshold = 300f // Umbral para modo lectura
+            }
+            "Exterior" -> {
+                // Configuraciones específicas para el modo exterior
+                userSettings.lowLightThreshold = 200f // Umbral para modo exterior
+                userSettings.highLightThreshold = 500f // Umbral para modo exterior
+            }
+        }
+
     }
 
     private fun updateUI(lightLevel: Float, lightStatus: String, mode: String) {
