@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Vibrator
 import com.example.myapplication.model.AlertType
 import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.ProximityReading
@@ -67,36 +68,22 @@ class ProximitySensorController(
         // Guardar las lecturas en la nube
         cloudRepository.storeProximityReading(reading) { success ->
             if (success) {
-                // La operación de guardado fue exitosa
+                // Operación exitosa
             } else {
-                // Ocurrió un error al guardar la lectura
+                // Error al guardar la lectura
             }
         }
     }
 
     private fun activateProximityAlert() {
-        // Activar alerta sonora y/o vibratoria según la configuración del usuario
-        when (userSettings.proximityAlertType) {
-            AlertType.SOUND -> playProximityAlertSound()
-            AlertType.VIBRATION -> vibrateProximityAlert()
-            AlertType.BOTH -> {
-                playProximityAlertSound()
-                vibrateProximityAlert()
-            }
-            else -> {
-                // No hacer nada si el tipo de alerta no está configurado
-            }
+        // Activar alerta vibratoria según la configuración del usuario
+        if (userSettings.proximityAlertType == AlertType.VIBRATION || userSettings.proximityAlertType == AlertType.BOTH) {
+            vibrateProximityAlert()
         }
     }
 
-    private fun playProximityAlertSound() {
-        // Implementar lógica para reproducir la alerta sonora
-    }
-
     private fun vibrateProximityAlert() {
-        // Implementar lógica para activar la vibración
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(500) // Vibrar durante 500 ms
     }
-
-
-
 }

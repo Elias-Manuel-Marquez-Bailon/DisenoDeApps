@@ -105,7 +105,7 @@
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
-                <RadioButton
+                <!--<RadioButton
                     android:id="@+id/idLectura"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/exterior"/>
+                    android:text="@string/exterior"/>-->
             </RadioGroup>
         </LinearLayout>
 
@@ -148,6 +148,20 @@
             android:text="@string/verHistorial"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:cornerRadius="8dp" />-->
+
+
+        <TextView
+            android:id="@+id/proximity_alert_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Obstáculo detectado!"
+            android:visibility="gone"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            android:layout_gravity="center" />
+
+
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDetenerDeteccion"
