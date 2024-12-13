@@ -67,8 +67,8 @@ class SettingsActivity : AppCompatActivity() {
         // txtValorLuz = findViewById(R.id.txtValorLux) // Asegúrate de que el ID sea correcto
         // txtEstadoLectura = findViewById(R.id.txtEstadoLuz) // Asegúrate de que el ID sea correcto
 
-        idLectura = findViewById(R.id.idLectura)
-        idExterior = findViewById(R.id.idExterior)
+        //idLectura = findViewById(R.id.idLectura)
+        //idExterior = findViewById(R.id.idExterior)
         idIndicadorLuz = findViewById(R.id.idIndicadorLuz)
 
         userSettings = UserSettings()

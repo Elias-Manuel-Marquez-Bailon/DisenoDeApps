@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
         idValorLuz = findViewById(R.id.idValorLuz)
         idEstadoLectura = findViewById(R.id.idEstadoLectura)
         idSeleccionar = findViewById(R.id.idSeleccionar)
-        //idLectura = findViewById(R.id.idLectura)
-        //idExterior = findViewById(R.id.idExterior)
+        idLectura = findViewById(R.id.idEstadoLectura)
+        idExterior = findViewById(R.id.idExterior)
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
         btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 

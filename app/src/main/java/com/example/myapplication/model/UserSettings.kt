@@ -37,6 +37,7 @@ data class UserSettings(
             AlertType.VIBRATION -> "Alerta por vibración"
             AlertType.BOTH -> "Alerta sonora y vibración"
             AlertType.PROXIMITY -> "Alerta por aproximidad"
+            AlertType.NONE -> TODO()
         }
     }
 
