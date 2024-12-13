@@ -1,10 +1,10 @@
 package com.example.myapplication.model
 
 data class LightReading (
-    val timestamp: Long,
+    val timestamp: Long = 0L,
     //val lux: Float
-    val lightLevel : Float,
-    val mode : String
+    val lightLevel : Float = 0F,
+    val mode : String = ""
 ) {
     override fun toString(): String {
         val formatearMarca = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
