@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
         idValorLuz = findViewById(R.id.idValorLuz)
         idEstadoLectura = findViewById(R.id.idEstadoLectura)
         idSeleccionar = findViewById(R.id.idSeleccionar)
-        idLectura = findViewById(R.id.idEstadoLectura)
-        idExterior = findViewById(R.id.idExterior)
+        idLectura = findViewById(R.id.idLectura) as RadioButton
+        idExterior = findViewById(R.id.idExterior) as RadioButton
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
         btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 
@@ -96,12 +96,12 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
             stopLightSensorMonitoring()
         }
 
-        /*idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
+        idSeleccionar.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.idLectura -> updateMode("Lectura")
                 R.id.idExterior -> updateMode("Exterior")
             }
-        }*/
+        }
 
         lightSensorController.onLightLevelChanged = { level ->
             val lightStatus = determineLightStatus(level)
