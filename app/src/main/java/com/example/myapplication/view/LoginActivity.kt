@@ -7,9 +7,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.model.CloudRepository
+import com.example.myapplication.model.UserSettings
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var userSettings: UserSettings
+    private val cloudRepository = CloudRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +24,41 @@ class LoginActivity : AppCompatActivity() {
         val registrar = findViewById<Button>(R.id.btnRegistrar)
         val iniciarSesion = findViewById<Button>(R.id.idIniciarSesion)
 
+        userSettings = UserSettings()
+
+        // En el método donde obtienes las configuraciones del usuario
+        cloudRepository.getUserSettings { settings ->
+            if (settings != null) {
+                // Actualizar las configuraciones del usuario
+                userSettings = settings
+                // Continuar con la lógica de inicio de sesión
+                // ...
+            } else {
+                // Manejar el caso en que no se puedan obtener las configuraciones
+                // Por ejemplo, puedes mostrar un mensaje de error o utilizar valores por defecto
+                Toast.makeText(this, "Error al obtener configuraciones del usuario", Toast.LENGTH_SHORT).show()
+                // Continuar con la lógica de inicio de sesión utilizando valores por defecto
+                // ...
+            }
+        }
+
         val auth = FirebaseAuth.getInstance()
+
+        // En el método donde obtienes las configuraciones del usuario
+        cloudRepository.getUserSettings { settings ->
+            if (settings != null) {
+                // Actualizar las configuraciones del usuario
+                userSettings = settings
+                // Continuar con la lógica de inicio de sesión
+                // ...
+            } else {
+                // Manejar el caso en que no se puedan obtener las configuraciones
+                // Por ejemplo, puedes mostrar un mensaje de error o utilizar valores por defecto
+                Toast.makeText(this, "Error al obtener configuraciones del usuario", Toast.LENGTH_SHORT).show()
+                // Continuar con la lógica de inicio de sesión utilizando valores por defecto
+                // ...
+            }
+        }
 
         registrar.setOnClickListener {
             val intent = Intent(this, RegistrarActivity::class.java)

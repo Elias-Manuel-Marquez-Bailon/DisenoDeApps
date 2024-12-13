@@ -1,8 +1,11 @@
 package com.example.myapplication.model
 
+import android.util.Log
 import com.example.myapplication.utils.Constants
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +19,10 @@ class CloudRepository {
     private val lightReadingsRef = database.child("light_readings")
     // Referencia específica para configuraciones de usuario
     private val userSettingsRef = database.child("user_settings")
+
+    private val firestoreRef = FirebaseFirestore.getInstance()
+    //private val userDocRef = firestoreRef.collection("users").document(currentUserId)
+
 
     //Metodo para obtener la lista de lecturas almacenadas en firebase
     fun uploadLightReading (lightLevel: Float, mode: String, callback: (Boolean) -> Unit)  {
@@ -92,22 +99,26 @@ class CloudRepository {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val snapshot = userSettingsRef.get().await()
-                val userSettingsMap = snapshot.getValue(Map::class.java) as? Map<*,*>
-                val userSettings = userSettingsMap?.let {
-                    UserSettings(
-                        readingLowLightThreshold = (it["readingLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
-                        readingHighLightThreshold = (it["readingHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
-                        readingAlertType = (it["readingAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
-                        exteriorLowLightThreshold = (it["exteriorLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
-                        exteriorHighLightThreshold = (it["exteriorHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
-                        exteriorAlertType = (it["exteriorAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
-                        alertVolume = (it["alertVolume"] as? Long)?.toInt() ?: 0,
-                        autoModeChangeEnabled = (it["autoModeChangeEnabled"] as? Boolean) ?: true,
-                        defaultMode = (it["defaultMode"] as? String) ?: Constants.DEFAULT_MODE
 
+                // Acceder a los datos del snapshot directamente
+                val userSettingsMap = snapshot.value as? Map<String, Any> ?: return@launch
+
+                // Definir el tipo genérico explícitamente
+                val userSettings = userSettingsMap.let { map ->
+                    UserSettings(
+                        readingLowLightThreshold = (map["readingLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        readingHighLightThreshold = (map["readingHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        readingAlertType = (map["readingAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
+                        exteriorLowLightThreshold = (map["exteriorLowLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        exteriorHighLightThreshold = (map["exteriorHighLightThreshold"] as? Double)?.toFloat() ?: 0f,
+                        exteriorAlertType = (map["exteriorAlertType"] as? String)?.let { type -> AlertType.valueOf(type) } ?: AlertType.BOTH,
+                        alertVolume = (map["alertVolume"] as? Long)?.toInt() ?: 0,
+                        autoModeChangeEnabled = (map["autoModeChangeEnabled"] as? Boolean) ?: true,
+                        defaultMode = (map["defaultMode"] as? String) ?: Constants.DEFAULT_MODE
                     )
                 }
-                withContext(Dispatchers.Main){
+
+                withContext(Dispatchers.Main) {
                     callback(userSettings)
                 }
             } catch (e: Exception) {

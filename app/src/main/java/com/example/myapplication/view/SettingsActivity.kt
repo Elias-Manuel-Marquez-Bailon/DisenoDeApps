@@ -6,11 +6,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.model.AlertType
 import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.UserSettings
+import com.example.myapplication.utils.Constants
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
 
@@ -43,10 +45,20 @@ class SettingsActivity : AppCompatActivity() {
         idRestaurar = findViewById(R.id.idRestaurar)
         idGuardar = findViewById(R.id.idGuardar)
 
+        userSettings = UserSettings()
+
         // Cargar las UserSettings
         cloudRepository.getUserSettings { settings ->
-            userSettings = settings ?: UserSettings()
-            updateUIWithUserSettings()
+            if (settings != null) {
+                userSettings = settings
+                updateUIWithUserSettings()
+            } else {
+                // Manejar el caso en que no se puedan obtener las configuraciones
+                // Por ejemplo, puedes mostrar un mensaje de error o utilizar valores por defecto
+                Toast.makeText(this, "Error al obtener configuraciones del usuario", Toast.LENGTH_SHORT).show()
+                // Inicializar los valores de la UI con valores por defecto
+                handleUserSettingsLoadError()
+            }
         }
 
         // Inicializar los valores de los deslizadores con los valores de las UserSettings
@@ -122,44 +134,67 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateUIWithUserSettings(){
-        // Actualizar los valores de los componentes de la vista con los valores de las UserSettings
-        idMinimoLectura.value = userSettings.readingLowLightThreshold
-        idMinimoExterior.value = userSettings.exteriorLowLightThreshold
+       userSettings?.let { settings ->
+           // Actualizar los valores de los componentes de la vista con los valores de las UserSettings
+           idMinimoLectura.value = userSettings.readingLowLightThreshold
+           idMinimoExterior.value = userSettings.exteriorLowLightThreshold
 
-        idAlertasVibracion.isChecked = userSettings.readingAlertType == AlertType.VIBRATION ||
-                userSettings.readingAlertType == AlertType.BOTH
+           idAlertasVibracion.isChecked = userSettings.readingAlertType == AlertType.VIBRATION ||
+                   userSettings.readingAlertType == AlertType.BOTH
 
-        idAlertasSonoras.isChecked = userSettings.readingAlertType == AlertType.SOUND
-                || userSettings.readingAlertType == AlertType.BOTH
+           idAlertasSonoras.isChecked = userSettings.readingAlertType == AlertType.SOUND
+                   || userSettings.readingAlertType == AlertType.BOTH
 
-        idVolumenAlerta.value = userSettings.alertVolume.toFloat()
-        idCambiarModoAutomatico.isChecked = userSettings.autoModeChangeEnabled
-        idModoPorDefecto.setText(userSettings.defaultMode, false)
+           idVolumenAlerta.value = userSettings.alertVolume.toFloat()
+           idCambiarModoAutomatico.isChecked = userSettings.autoModeChangeEnabled
+           idModoPorDefecto.setText(userSettings.defaultMode, false)
 
-        idVolumenAlerta.value = userSettings.alertVolume.toFloat()
-        idCambiarModoAutomatico.isChecked = userSettings.autoModeChangeEnabled
+           idVolumenAlerta.value = userSettings.alertVolume.toFloat()
+           idCambiarModoAutomatico.isChecked = userSettings.autoModeChangeEnabled
 
-        idModoPorDefecto.setText(userSettings.defaultMode, false)
+           idModoPorDefecto.setText(userSettings.defaultMode, false)
+       }
     }
 
     private fun updateUserSettingsFromUI() {
-        // Actualizar los valores de las UserSettings con los valores seleccionados por el usuario en la interfaz
-        userSettings.readingLowLightThreshold = idMinimoLectura.value.toInt().toFloat()
-        userSettings.exteriorLowLightThreshold = idMinimoExterior.value.toInt().toFloat()
-        userSettings.readingAlertType = when {
-            idAlertasVibracion.isChecked && idAlertasSonoras.isChecked -> AlertType.BOTH
-            idAlertasVibracion.isChecked -> AlertType.VIBRATION
-            idAlertasSonoras.isChecked -> AlertType.SOUND
-            else -> AlertType.BOTH
+        userSettings?.let { settings ->
+            // Actualizar los valores de las UserSettings con los valores seleccionados por el usuario en la interfaz
+            userSettings.readingLowLightThreshold = idMinimoLectura.value.toInt().toFloat()
+            userSettings.exteriorLowLightThreshold = idMinimoExterior.value.toInt().toFloat()
+            userSettings.readingAlertType = when {
+                idAlertasVibracion.isChecked && idAlertasSonoras.isChecked -> AlertType.BOTH
+                idAlertasVibracion.isChecked -> AlertType.VIBRATION
+                idAlertasSonoras.isChecked -> AlertType.SOUND
+                else -> AlertType.BOTH
+            }
+            userSettings.alertVolume = idVolumenAlerta.value.toInt()
+            userSettings.autoModeChangeEnabled = idCambiarModoAutomatico.isChecked
+            userSettings.defaultMode = idModoPorDefecto.text.toString()
+
+            userSettings.alertVolume = idVolumenAlerta.value.toInt()
+            userSettings.autoModeChangeEnabled = idCambiarModoAutomatico.isChecked
+
+            userSettings.defaultMode = idModoPorDefecto.text.toString()
         }
-        userSettings.alertVolume = idVolumenAlerta.value.toInt()
-        userSettings.autoModeChangeEnabled = idCambiarModoAutomatico.isChecked
-        userSettings.defaultMode = idModoPorDefecto.text.toString()
-
-        userSettings.alertVolume = idVolumenAlerta.value.toInt()
-        userSettings.autoModeChangeEnabled = idCambiarModoAutomatico.isChecked
-
-        userSettings.defaultMode = idModoPorDefecto.text.toString()
     }
+
+    private fun handleUserSettingsLoadError() {
+        // Manejar el caso en que no se puedan obtener las configuraciones
+        // Por ejemplo, mostrar un mensaje de error o utilizar valores por defecto
+        Toast.makeText(this, "Error al obtener configuraciones del usuario", Toast.LENGTH_SHORT).show()
+        initializeUIWithDefaultValues()
+    }
+
+    private fun initializeUIWithDefaultValues() {
+        // Inicializar los componentes de la UI con valores por defecto
+        idMinimoLectura.value = Constants.DEFAULT_READING_LOW_LIGHT_THRESHOLD
+        idMinimoExterior.value = Constants.DEFAULT_EXTERIOR_LOW_LIGHT_THRESHOLD
+        idAlertasVibracion.isChecked = (userSettings.readingAlertType == AlertType.VIBRATION || userSettings.readingAlertType == AlertType.BOTH)
+        idAlertasSonoras.isChecked = (userSettings.readingAlertType == AlertType.SOUND || userSettings.readingAlertType == AlertType.BOTH)
+        idVolumenAlerta.value = userSettings.alertVolume.toFloat()
+        idCambiarModoAutomatico.isChecked = userSettings.autoModeChangeEnabled
+        idModoPorDefecto.setText(userSettings.defaultMode)
+    }
+
 
 }
