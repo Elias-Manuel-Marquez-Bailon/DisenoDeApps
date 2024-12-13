@@ -3,20 +3,17 @@ package com.example.myapplication.utils
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.myapplication.R
-import com.example.myapplication.model.AlertType
-import com.example.myapplication.model.UserSettings
 
-class NotificationHelper (private val context: Context) {
-    private val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+class NotificationHelper(private val context: Context) {
 
-    private val channelId = "light_detector_channel"
-    private val channelName = "Light Detector Notifications"
-    private val channelDescription = "Notifications related to light level detection"
+    companion object {
+        const val CHANNEL_ID = "light_level_notifications"
+        const val CHANNEL_NAME = "Light Level Alerts"
+        const val CHANNEL_DESCRIPTION = "Notifications for changes in light levels"
+    }
 
     init {
         createNotificationChannel()
@@ -25,52 +22,27 @@ class NotificationHelper (private val context: Context) {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
-                channelName,
+                CHANNEL_ID,
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
-            ). apply {
-                description = channelDescription
+            ).apply {
+                description = CHANNEL_DESCRIPTION
             }
-            notificationManager.createNotificationChannel(channel)
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(channel)
         }
     }
 
-    //Metodo de una notificacion de nivel de luz bajo
-    fun createLowLightNotification (userSettings: UserSettings) {
-        val notificationBuilder = NotificationCompat.Builder(context,channelId)
-            .setSmallIcon(R.drawable.ic_light)
-            .setContentTitle("Low Light Level Detected")
-            .setContentText("Light level is below ${userSettings.lowLightThreshold} lux")
+    fun sendNotification(title: String, message: String) {
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_light) // Asegúrate de tener un icono en tu proyecto
+            .setContentTitle(title)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-        if (userSettings.alertType == AlertType.SOUND ||
-            userSettings.alertType == AlertType.BOTH) {
-            notificationBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-        }
+            .setAutoCancel(true)
 
-        if (userSettings.alertType == AlertType.VIBRATION ||
-            userSettings.alertType == AlertType.BOTH) {
-            notificationBuilder.setVibrate(longArrayOf(0,1000,500,1000))
-        }
-        notificationManager.notify(1,notificationBuilder.build())
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
-
-    //Metodo de una notificacion de nivel de luz alto
-    fun createHighLightNotification( userSettings: UserSettings) {
-        val notificationBuilder = NotificationCompat.Builder(context,channelId)
-            .setSmallIcon(R.drawable.ic_light)
-            .setContentTitle("High Light Level Detected")
-            .setContentText("Light level is above ${userSettings.highLightThreshold} lux")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-        if (userSettings.alertType == AlertType.SOUND ||
-            userSettings.alertType == AlertType.BOTH) {
-                notificationBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-        }
-        if (userSettings.alertType == AlertType.VIBRATION ||
-            userSettings.alertType == AlertType.BOTH) {
-
-            notificationBuilder.setVibrate(longArrayOf(0, 1000, 500, 1000))
-        }
-        notificationManager.notify(2,notificationBuilder.build())
-    }
-
 }

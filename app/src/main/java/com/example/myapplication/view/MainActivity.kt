@@ -1,14 +1,21 @@
 package com.example.myapplication.view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.controller.AlertController
@@ -20,6 +27,8 @@ import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListener {
+    //Identificador unico del canal de notificaciones
+    private val channelId="test_id"
     private lateinit var idIndicadorLuz: MaterialCardView
     private lateinit var idValorLuz: TextView
     private lateinit var idEstadoLectura: TextView
@@ -98,6 +107,61 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
                 cloudRepository.uploadLightReading(level, currentMode) { }
             }
         }
+    }
+    //Solicitar permiso de notificaciones para Android13 +
+    private fun requestNotificationPermission(){
+        val requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ){isGranted : Boolean ->
+            if (isGranted){
+                Log.d("Permisos", "Permiso concedido")
+                mostrarNotificacionConRetraso()
+            }else{
+                Log.e("Permisos", "Permiso denegado")
+            }
+        }
+
+        //Lanzar la solicitud del permiso
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    private fun mostrarNotificacionConRetraso(){
+        window.decorView.postDelayed({
+            try {
+                mostrarNotificacion() //Enviar notificacion basica
+                Log.e("Depuracion", "Notificacion enviada correctamente")
+            }catch (e: Exception){
+                Log.e("Error", "Error al mostrar la notificacion: ${e.message}")
+            }
+        }, 2000)
+    }
+
+    private fun mostrarNotificacion(){
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(android.R.drawable.ic_dialog_info) //Icono de la notificacion
+            .setContentTitle("Notificacion de prueba") //titulode la notificacio
+            .setContentText("Esto es una notificacion de prueba") //Testo de la notificacion
+            .setPriority(NotificationCompat.PRIORITY_HIGH) //nIVEL DE PRIORIDAD
+            .setAutoCancel(true) //La notifiacion desaparecera al tocarla
+            .build()
+
+        //Enviar la notificacion
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        NotificationManagerCompat.from(this).notify(1001, notification)
+        Log.d("Depuracion", "Notificacion construida y enviada")
     }
 
     override fun onResume() {
