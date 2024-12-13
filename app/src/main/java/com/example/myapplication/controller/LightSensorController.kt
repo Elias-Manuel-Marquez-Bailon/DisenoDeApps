@@ -1,14 +1,11 @@
 package com.example.myapplication.controller
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import com.example.myapplication.R
 import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.LightReading
@@ -25,8 +22,10 @@ class LightSensorController (
     private var sensorEventListener: SensorEventListener? = null
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
-    //Se agregó esta variable para niveles bruscos
-    private var previousLightLevel: Float = 0F
+    private var isLightSensorRegistered = false
+
+    //Se agrego esta variable para niveles bruscos
+    private var previousLightLevel : Float = 0F
 
     private var listener: LightSensorListener? = null
 
@@ -34,19 +33,24 @@ class LightSensorController (
         fun onSensorChanged(lightLevel: Float, mode: String)
     }
 
-    var onLightLevelChanged: ((Float) -> Unit)? = null
+    var onLightLevelChanged:((Float) -> Unit)? = null
 
     // Método para establecer el listener
-    fun setListener(lightSensorListener: LightSensorListener) {
+    fun setListener(lightSensorListener: LightSensorListener){
         listener = lightSensorListener
     }
 
-    // Método inicia el monitoreo del sensor en la base de datos
+    //Metodo inicia el monitoreo del sensor en la base de datos
     fun startLightSensorMonitoring() {
+        if (isLightSensorRegistered) {
+            return // Evitar registrar el listener si ya está registrado
+        }
+
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT)
+
         sensorEventListener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent) {
+            override fun onSensorChanged (event: SensorEvent) {
                 val currentLightLevel = event.values[0]
                 onLightLevelChanged?.invoke(currentLightLevel)
                 // Notificar al listener
@@ -57,66 +61,46 @@ class LightSensorController (
                 // Este método se llama cuando cambia la precisión del sensor
             }
         }
+
         sensorManager?.registerListener(
             sensorEventListener,
             lightSensor,
             SensorManager.SENSOR_DELAY_UI
         )
+        isLightSensorRegistered = true // Marcar que el listener está registrado
     }
 
-    // Método detener el monitoreo del sensor de luz
     fun stopLightSensorMonitoring() {
+        if (!isLightSensorRegistered) {
+            return // Evitar desregistrar si no está registrado
+        }
+
         sensorEventListener?.let {
             sensorManager?.unregisterListener(it)
         }
         sensorEventListener = null
         sensorManager = null
         lightSensor = null
+        isLightSensorRegistered = false // Marcar que el listener ya no está registrado
     }
-
-    // Método para manejar los cambios en el nivel de luz y realizar las acciones correspondientes
-    fun onLightLevelChanged(lightLevel: Float, mode: String) {
+    //Metodo para manejar los cambios en el nivel de luz y realizar las acciones correspondientes
+    fun onLightLevelChanged(lightLevel: Float, mode : String) {
         // Verificar si el nivel de luz actual está fuera del rango adecuado
         if (isBrightnessDifferenceSignificant(lightLevel)) {
-            cloudRepository.uploadLightReading(lightLevel, "Modo") { success ->
-                // Manejar el resultado de la operación de guardado
+            cloudRepository.uploadLightReading(lightLevel,"Modo") { succes ->
+                //Manejar el resultado de la operacion de guardado
             }
             previousLightLevel = lightLevel
         }
-        checkLightLevels(lightLevel, mode)
+        checkLightLevels(lightLevel,mode)
     }
 
     private fun isBrightnessDifferenceSignificant(currentLightLevel: Float): Boolean {
         val brightnessDifference = abs(currentLightLevel - previousLightLevel)
-        if (brightnessDifference >= max(userSettings.lowLightThreshold, userSettings.highLightThreshold) * 0.2) {
-            // Enviar notificación
-            sendLightChangeNotification()
-            return true
-        }
-        return false
-    }
-
-    private fun sendLightChangeNotification() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "light_sensor_notifications"
-
-        // Crear un canal de notificación para Android 8.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Notificaciones de Luz",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_notification) // Usa un ícono en drawable
-            .setContentTitle("CUIDADO")
-            .setContentText("Se detectó un cambio brusco de luz.")
-            .setAutoCancel(true)
-
-        notificationManager.notify(1, notificationBuilder.build())
+        return brightnessDifference >= max(
+            userSettings.lowLightThreshold,
+            userSettings.highLightThreshold
+        ) * 0.2 //20% De diferencia
     }
 
     private fun checkLightLevels(currentLightLevel: Float, mode: String) {
@@ -133,6 +117,7 @@ class LightSensorController (
                     alertController.stopAlerts()
                 }
             }
+
             "Exterior" -> {
                 // Verificar niveles de luz para el modo "Exterior"
                 if (currentLightLevel < userSettings.exteriorLowLightThreshold) {
@@ -143,28 +128,7 @@ class LightSensorController (
                     alertController.stopAlerts()
                 }
             }
+
         }
     }
-
-    private fun sendTestNotification() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "test_channel"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Test Notifications",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Test Notification")
-            .setContentText("This is a test notification.")
-            .setAutoCancel(true)
-
-        notificationManager.notify(999, notificationBuilder.build())
-    }
-
 }
