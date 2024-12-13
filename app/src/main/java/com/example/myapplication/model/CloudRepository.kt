@@ -21,8 +21,10 @@ class CloudRepository {
     private val userSettingsRef = database.child("user_settings")
 
     private val firestoreRef = FirebaseFirestore.getInstance()
-    //private val userDocRef = firestoreRef.collection("users").document(currentUserId)
 
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    //private val userDocRef = firestoreRef.collection("users").document(currentUserId)
+    private val proximityReadingsRef: DatabaseReference = firebaseDatabase.getReference(Constants.PROXIMITY_READINGS_PATH)
 
     //Metodo para obtener la lista de lecturas almacenadas en firebase
     fun uploadLightReading (lightLevel: Float, mode: String, callback: (Boolean) -> Unit)  {
@@ -168,6 +170,17 @@ class CloudRepository {
                 }
             }
         }
+    }
+
+    fun storeProximityReading(reading: ProximityReading, callback: (Boolean) -> Unit) {
+        val readingRef = proximityReadingsRef.push()
+        readingRef.setValue(reading)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener { exception ->
+                callback(false)
+            }
     }
 
 }
