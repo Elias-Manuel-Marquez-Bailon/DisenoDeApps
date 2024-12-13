@@ -89,6 +89,8 @@ class HistoryActivity : AppCompatActivity() {
                     val lightReading = dataSnapshot.getValue(LightReading::class.java)
                     lightReading
                 }
+
+                readings = readings.reversed()
                 updateRecyclerView(readings)
             }
             override fun onCancelled (error: DatabaseError){

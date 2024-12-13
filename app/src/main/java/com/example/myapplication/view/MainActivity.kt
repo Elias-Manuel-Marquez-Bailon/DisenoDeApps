@@ -1,5 +1,6 @@
 package com.example.myapplication.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -18,7 +19,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListener {
     private lateinit var idIndicadorLuz: MaterialCardView
     private lateinit var idValorLuz: TextView
     private lateinit var idEstadoLectura: TextView
@@ -28,13 +29,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnIniciarDeteccion: MaterialButton
     private lateinit var btnDetenerDeteccion: MaterialButton
 
-    private lateinit var lightSensorController: LightSensorController
     private lateinit var alertController: AlertController
     private lateinit var userSettings: UserSettings
     private val cloudRepository = CloudRepository()
     private var currentMode: String = "Lectura"
     private var isMonitoring = false
 
+    private lateinit var txtValorLuz: TextView
+    private lateinit var txtEstadoLectura: TextView
+    private lateinit var lightSensorController: LightSensorController
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,9 +54,16 @@ class MainActivity : AppCompatActivity() {
         btnIniciarDeteccion = findViewById(R.id.btnIniciarDeteccion)
         btnDetenerDeteccion = findViewById(R.id.btnDetenerDeteccion)
 
+        // Inicializa los TextViews
+        txtValorLuz = findViewById(R.id.idValorLuz) // Asegúrate de que el ID coincida con tu layout
+        txtEstadoLectura = findViewById(R.id.idEstadoLectura)
+
         userSettings = UserSettings()
         lightSensorController = LightSensorController(this, userSettings, cloudRepository)
         alertController = AlertController(this)
+
+        // Inicializa el controller (no olvides pasar UserSettings y CloudRepository)
+        lightSensorController.setListener(this) // Establecer el listener
 
         cloudRepository.getUserSettings { settings ->
             userSettings = settings ?: UserSettings()
@@ -88,6 +100,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        lightSensorController.startLightSensorMonitoring() // Iniciar el sensor al volver a la actividad
+    }
+
+    override fun onPause() {
+        super.onPause()
+        lightSensorController.stopLightSensorMonitoring() // Detener el sensor al salir de la actividad
+    }
+
+    // Implementación del método de la interfaz
+    override fun onSensorChanged(lightLevel: Float, mode: String) {
+        updateSensorData(lightLevel, mode) // Actualiza la UI
+    }
+
     private fun startLightSensorMonitoring() {
         if (!isMonitoring) {
             lightSensorController.startLightSensorMonitoring()
@@ -102,6 +129,11 @@ class MainActivity : AppCompatActivity() {
             isMonitoring = false
             //btnIniciarDeteccion.text = getString(R.string.iniciarDeteccion)
         }
+    }
+
+    fun updateSensorData(lightLevel: Float, mode: String) {
+        txtValorLuz.text = "$lightLevel lux"
+        txtEstadoLectura.text = mode
     }
 
     private fun updateMode(mode: String) {

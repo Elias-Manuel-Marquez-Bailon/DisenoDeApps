@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import com.example.myapplication.model.CloudRepository
+import com.example.myapplication.model.LightReading
 import com.example.myapplication.model.UserSettings
 import kotlin.math.abs
 import kotlin.math.max
@@ -22,7 +23,18 @@ class LightSensorController (
     //Se agrego esta variable para niveles bruscos
     private var previousLightLevel : Float = 0F
 
+    private var listener: LightSensorListener? = null
+
+    interface LightSensorListener {
+        fun onSensorChanged(lightLevel: Float, mode: String)
+    }
+
     var onLightLevelChanged:((Float) -> Unit)? = null
+
+    // Método para establecer el listener
+    fun setListener(lightSensorListener: LightSensorListener){
+        listener = lightSensorListener
+    }
 
     //Metodo inicia el monitoreo del sensor en la base de datos
     fun startLightSensorMonitoring() {
@@ -32,6 +44,8 @@ class LightSensorController (
             override fun onSensorChanged (event: SensorEvent) {
                 val currentLightLevel = event.values[0]
                 onLightLevelChanged?.invoke(currentLightLevel)
+                // Notificar al listener
+                listener?.onSensorChanged(currentLightLevel, "Lectura")
             }
             override fun onAccuracyChanged (sensor: Sensor,accuracy: Int) {
                 // Este método se llama cuando cambia la precisión del sensor
