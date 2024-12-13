@@ -5,6 +5,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
+import com.example.myapplication.R
 import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.LightReading
 import com.example.myapplication.model.UserSettings
@@ -20,10 +22,10 @@ class LightSensorController (
     private var sensorEventListener: SensorEventListener? = null
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
-    private var isLightSensorRegistered = false // Bandera para evitar registros redundantes
+    private var isLightSensorRegistered = false
 
     //Se agrego esta variable para niveles bruscos
-    private var previousLightLevel: Float = 0F
+    private var previousLightLevel : Float = 0F
 
     private var listener: LightSensorListener? = null
 
@@ -31,16 +33,14 @@ class LightSensorController (
         fun onSensorChanged(lightLevel: Float, mode: String)
     }
 
-    var onLightLevelChanged: ((Float) -> Unit)? = null
+    var onLightLevelChanged:((Float) -> Unit)? = null
 
     // Método para establecer el listener
-    fun setListener(lightSensorListener: LightSensorListener) {
+    fun setListener(lightSensorListener: LightSensorListener){
         listener = lightSensorListener
     }
 
-    //Metodo inicia el monitoreo del sensor en la base de datos}
-
-
+    //Metodo inicia el monitoreo del sensor en la base de datos
     fun startLightSensorMonitoring() {
         if (isLightSensorRegistered) {
             return // Evitar registrar el listener si ya está registrado
@@ -50,7 +50,7 @@ class LightSensorController (
         lightSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT)
 
         sensorEventListener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent) {
+            override fun onSensorChanged (event: SensorEvent) {
                 val currentLightLevel = event.values[0]
                 onLightLevelChanged?.invoke(currentLightLevel)
                 // Notificar al listener
@@ -83,18 +83,16 @@ class LightSensorController (
         lightSensor = null
         isLightSensorRegistered = false // Marcar que el listener ya no está registrado
     }
-
-
     //Metodo para manejar los cambios en el nivel de luz y realizar las acciones correspondientes
-    fun onLightLevelChanged(lightLevel: Float, mode: String) {
+    fun onLightLevelChanged(lightLevel: Float, mode : String) {
         // Verificar si el nivel de luz actual está fuera del rango adecuado
         if (isBrightnessDifferenceSignificant(lightLevel)) {
-            cloudRepository.uploadLightReading(lightLevel, "Modo") { succes ->
+            cloudRepository.uploadLightReading(lightLevel,"Modo") { succes ->
                 //Manejar el resultado de la operacion de guardado
             }
             previousLightLevel = lightLevel
         }
-        checkLightLevels(lightLevel, mode)
+        checkLightLevels(lightLevel,mode)
     }
 
     private fun isBrightnessDifferenceSignificant(currentLightLevel: Float): Boolean {

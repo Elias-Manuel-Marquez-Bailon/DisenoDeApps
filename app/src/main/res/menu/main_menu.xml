@@ -15,12 +15,6 @@
         android:orderInCategory="1"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/menu_ajustes"
-        android:icon="@drawable/ic_settings"
-        android:title="Ajustes"
-        app:showAsAction="ifRoom"/>
-
     <!--<item
         android:id="@+id/menu_info"
         android:icon="@drawable/ic_information"

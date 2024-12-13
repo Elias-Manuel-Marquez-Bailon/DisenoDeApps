@@ -237,14 +237,29 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
 
     private fun updateUI(lightLevel: Float, lightStatus: String, mode: String) {
         idValorLuz.text = "$lightLevel lux"
-        idEstadoLectura.text = lightStatus
+
+        when {
+            idLectura.isChecked -> {
+                when (lightStatus) {
+                    "Luz baja" -> idEstadoLectura.text = "La luz es muy baja, se recomienda encender una luz"
+                    "Luz alta" -> idEstadoLectura.text = "La luz es muy alta, trata de cambiarte de lugar"
+                    "Luz adecuada" -> idEstadoLectura.text = "Luz adecuada para lectura"
+                }
+            }
+            idExterior.isChecked -> {
+                when (lightStatus) {
+                    "Luz baja" -> idEstadoLectura.text = "La luz es muy baja, ¿Si estas afuera en el sol?"
+                    "Luz alta" -> idEstadoLectura.text = "Estas en un lugar con mucha luz, buscate un lugar para refugiarte"
+                    "Luz adecuada" -> idEstadoLectura.text = "Luz adecuada para exterior"
+                }
+            }
+        }
+
         when (lightStatus) {
             "Luz adecuada" -> idIndicadorLuz.setCardBackgroundColor(getColor(R.color.purple_200))
             "Luz baja" -> idIndicadorLuz.setCardBackgroundColor(getColor(R.color.teal_200))
             "Luz alta" -> idIndicadorLuz.setCardBackgroundColor(getColor(R.color.purple_500))
         }
-        idLectura.isChecked = mode == "Lectura"
-        idExterior.isChecked = mode == "Exterior"
     }
 
     private fun determineLightStatus(lightLevel: Float): String {
@@ -266,10 +281,7 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
                 navigateToHistoryActivity()
                 true
             }
-            R.id.menu_ajustes -> {
-                navigateToSettingsActivity()
-                true
-            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -283,4 +295,5 @@ class MainActivity : AppCompatActivity(),LightSensorController.LightSensorListen
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
     }
+
 }
