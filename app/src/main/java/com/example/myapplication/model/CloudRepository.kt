@@ -183,4 +183,13 @@ class CloudRepository {
             }
     }
 
+    fun deleteLightReading(readingId: String, callback: (Boolean) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val reference = database.getReference("light_readings").child(readingId)
+
+        reference.removeValue().addOnCompleteListener { task ->
+            callback(task.isSuccessful)
+        }
+    }
+
 }

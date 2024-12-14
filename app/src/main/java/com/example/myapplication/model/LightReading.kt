@@ -1,6 +1,7 @@
 package com.example.myapplication.model
 
 data class LightReading (
+    val id: String = "",
     val timestamp: Long = 0L,
     //val lux: Float
     val lightLevel : Float = 0F,

@@ -6,12 +6,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.controller.HistoryController
+import com.example.myapplication.model.AlertType
+import com.example.myapplication.model.CloudRepository
 import com.example.myapplication.model.LightReading
 import com.example.myapplication.model.UserSettings
 import com.google.firebase.database.DataSnapshot
@@ -21,6 +24,7 @@ import com.google.firebase.database.ValueEventListener
 import java.lang.Error
 
 class HistoryActivity : AppCompatActivity() {
+    private lateinit var cloudRepository: CloudRepository
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HistoryAdapter
     private lateinit var historyController: HistoryController
@@ -30,6 +34,9 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
+
+        cloudRepository = CloudRepository()
+        userSettings = getUserSettings()
 
         recyclerView = findViewById(R.id.recyclerViewHistory)
         historyController = HistoryController(this)
@@ -107,6 +114,26 @@ class HistoryActivity : AppCompatActivity() {
             adapter = HistoryAdapter(readings, userSettings)
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(this)
+        }
+    }
+
+    private fun getUserSettings(): UserSettings {
+        // Retorna un objeto UserSettings con valores predeterminados
+        return UserSettings(
+            lowLightThreshold = 100f,
+            highLightThreshold = 800f,
+            alertType = AlertType.BOTH // Puedes ajustar según sea necesario
+        )
+    }
+
+    private fun deleteReading(readingId: String) {
+        cloudRepository.deleteLightReading(readingId) { success ->
+            if (success) {
+                Toast.makeText(this, "Lectura eliminada con éxito", Toast.LENGTH_SHORT).show()
+                loadDataFromFirebase() // Recarga los datos desde Firebase
+            } else {
+                Toast.makeText(this, "Error al eliminar la lectura", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

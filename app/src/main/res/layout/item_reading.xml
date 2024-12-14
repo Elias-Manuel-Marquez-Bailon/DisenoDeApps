@@ -62,6 +62,12 @@
             android:textColor="?android:textColorSecondary"
             tools:text="07/12/2023 15:30"/>
 
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Eliminar" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

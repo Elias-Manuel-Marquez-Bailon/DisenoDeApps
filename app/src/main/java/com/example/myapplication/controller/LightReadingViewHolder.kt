@@ -1,6 +1,7 @@
 package com.example.myapplication.controller
 
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
@@ -12,12 +13,14 @@ import java.util.Locale
 
 class LightReadingViewHolder(
     itemView: View,
-    private val userSettings: UserSettings
+    private val userSettings: UserSettings,
+    private val deleteClickListener: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
     private val txtValorLux: TextView = itemView.findViewById(R.id.txtValorLux)
     private val txtModo: TextView = itemView.findViewById(R.id.txtModo)
     private val txtEstadoLuz: TextView = itemView.findViewById(R.id.txtEstadoLuz)
     private val txtFechaHora: TextView = itemView.findViewById(R.id.txtFechaHora)
+    private val buttonDelete: Button = itemView.findViewById(R.id.deleteButton)
 
     fun bind(lightReading: LightReading) {
         txtValorLux.text = "${lightReading.lightLevel} lux"
@@ -26,6 +29,13 @@ class LightReadingViewHolder(
 
         // Establecer el estado de la lectura de luz (Luz adecuada, Luz baja, Luz alta)
         txtEstadoLuz.text = getReadingStatus(lightReading.lightLevel)
+
+        buttonDelete.setOnClickListener {
+            deleteClickListener(lightReading.id) // Llamar al listener con el ID de la lectura
+        }
+
+        //val readingTextView = itemView.findViewById<TextView>(R.id.readingTxtView)
+        //readingTextView.text = reading.value.toString() // Ajusta según tus propiedades
     }
 
     private fun formatTimestamp(timestamp: Long): String {
